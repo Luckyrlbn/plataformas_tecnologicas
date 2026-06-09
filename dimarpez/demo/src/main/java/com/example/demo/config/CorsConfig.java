@@ -5,7 +5,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Permite que el frontend (React en Vercel o localhost:5173) llame a la API
  */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
