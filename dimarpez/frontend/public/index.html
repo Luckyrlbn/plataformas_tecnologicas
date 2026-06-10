@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Dimarpez — Mariscos y Pescados Frescos</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐟%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+  <div class="logo" data-nav="home">🐟 dimar<span class="logo-dot">pez</span></div>
+  <div class="nav-links">
+    <button class="nav-link active" data-nav="home">Inicio</button>
+    <button class="nav-link" data-nav="catalog">Catálogo</button>
+  </div>
+  <div class="nav-right">
+    <button class="user-btn" id="openAuthBtn">Ingresar</button>
+    <button class="cart-btn" id="openCartBtn">🛒 Carrito <span class="cart-count" id="cartCount" style="display:none">0</span></button>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div data-page="home" class="active" id="page-home">
+  <div class="hero">
+    <div class="hero-pattern"></div>
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-badge"><span class="hero-badge-dot"></span> Frescos del día · Cúcuta y alrededores</div>
+    <h1>Lo mejor del <em>mar</em><br>directo a tu <strong>mesa</strong></h1>
+    <p class="hero-sub">Mariscos y pescados frescos al por mayor y detal. Pedidos a domicilio rápidos.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" data-nav="catalog">Ver catálogo →</button>
+      <button class="btn-outline" id="whatsappBtn">💬 WhatsApp</button>
+    </div>
+  </div>
+  <div class="catalog">
+    <div class="section-title">Productos <span>destacados</span></div>
+    <div class="grid" id="featuredGrid"></div>
+    <div style="text-align:center;margin-top:28px">
+      <button class="btn-primary" data-nav="catalog">Ver todos los productos →</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="info-section">
+    <div class="info-grid">
+      <div class="info-card"><div class="info-icon">🕐</div><div class="info-title">Horario de atención</div><div class="info-text">Lunes a Sábado <strong>6:00 AM – 6:00 PM</strong><br>Domingos <strong>7:00 AM – 2:00 PM</strong></div></div>
+      <div class="info-card"><div class="info-icon">📍</div><div class="info-title">Zona de cobertura</div><div class="info-text">Cúcuta, Los Patios, Villa del Rosario, El Zulia y municipios cercanos.</div></div>
+      <div class="info-card"><div class="info-icon">🚚</div><div class="info-title">Domicilio gratis</div><div class="info-text">En pedidos mayores a <strong>$50.000</strong>. Pedidos menores, consultamos el envío.</div></div>
+      <div class="info-card"><div class="info-icon">📞</div><div class="info-title">Contáctanos</div><div class="info-text">WhatsApp <strong>+57 302 856 1215</strong> — respondemos en minutos.</div></div>
+    </div>
+  </div>
+  <footer class="footer"><strong>Dimarpez</strong> — Mariscos y pescados frescos · Cúcuta, Norte de Santander<br><span style="margin-top:4px;display:block">© 2025 Todos los derechos reservados</span></footer>
+</div>
+
+<!-- CATALOG PAGE -->
+<div data-page="catalog" id="page-catalog">
+  <div class="catalog">
+    <div class="section-title">Nuestro <span>catálogo</span></div>
+    <div class="filters" id="filterBtns"></div>
+    <div class="grid" id="catalogGrid"></div>
+  </div>
+</div>
+
+<!-- CART PANEL -->
+<div id="cartOverlay" style="display:none">
+  <div class="overlay" data-close-cart></div>
+  <div class="panel">
+    <div class="panel-head"><h2>🛒 Tu pedido</h2><button class="close-btn" data-close-cart>✕</button></div>
+    <div class="panel-body" id="cartBody"><div class="empty"><div class="empty-icon">🦐</div><p>Tu carrito está vacío</p></div></div>
+    <div class="panel-foot"><div class="total-row"><span>Total</span><span id="cartTotal">$0</span></div><button class="btn-primary" style="width:100%" id="checkoutBtn" disabled>Continuar al pago →</button></div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-bg" id="checkoutModal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">Confirmar pedido</div>
+    <p class="modal-sub">Completa tus datos para finalizar la compra</p>
+    <div class="form-row"><div class="fg"><label class="label">Nombre *</label><input class="input" id="chkName" placeholder="Tu nombre"></div><div class="fg"><label class="label">Apodo</label><input class="input" id="chkAlias" placeholder="Opcional"></div></div>
+    <div class="fg"><label class="label">Dirección *</label><input class="input" id="chkAddress" placeholder="Calle, barrio, punto de referencia..."></div>
+    <div class="fg"><label class="label">Nota especial</label><textarea class="textarea" id="chkNote" placeholder="Ej. Sin cabeza, entrega después de las 3pm..."></textarea></div>
+    <div class="fg"><label class="label">Método de pago *</label><div class="pay-grid" id="payGrid"></div></div>
+    <div class="summary"><div class="sum-title">Resumen del pedido</div><div id="orderSummaryItems"></div><div class="sum-total"><span>Total a pagar</span><span id="orderSummaryTotal">$0</span></div></div>
+    <div class="ferror" id="chkError" style="display:none"></div>
+    <button class="btn-confirm" id="confirmBtn">✅ Confirmar pedido</button>
+    <button class="btn-ghost" id="closeCheckoutBtn">Cancelar</button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-bg" id="authModal" style="display:none">
+  <div class="modal">
+    <div class="modal-title" id="authTitle">Bienvenido de nuevo</div>
+    <p class="modal-sub" id="authSub">Ingresa para ver tus pedidos y guardar tu información.</p>
+    <div class="auth-tabs"><button class="auth-tab on" data-auth-tab="login">Iniciar sesión</button><button class="auth-tab" data-auth-tab="register">Registrarse</button></div>
+    <div id="registerFields" style="display:none"><div class="fg"><label class="label">Nombre completo *</label><input class="input" id="regName" placeholder="Tu nombre"></div></div>
+    <div class="fg"><label class="label">Correo electrónico *</label><input class="input" id="authEmail" placeholder="correo@ejemplo.com"></div>
+    <div class="fg"><label class="label">Contraseña *</label><input class="input" type="password" id="authPassword" placeholder="••••••••"></div>
+    <div id="registerExtra" style="display:none"><div class="fg"><label class="label">Dirección habitual</label><input class="input" id="regAddress" placeholder="Opcional"></div><div class="fg"><label class="label">Método de pago preferido</label><select class="fselect" id="regPayment"><option value="">Seleccionar...</option><option>Efectivo</option><option>Nequi</option><option>Daviplata</option><option>Transferencia Bancaria</option></select></div></div>
+    <div class="ferror" id="authError" style="display:none"></div>
+    <button class="btn-full" id="authBtn">Ingresar</button>
+    <button class="btn-ghost" id="closeAuthBtn">Cancelar</button>
+  </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success" id="successScreen" style="display:none">
+  <div class="success-icon">🎉</div>
+  <h2>¡Pedido confirmado!</h2>
+  <p>Tu pedido fue registrado exitosamente. El equipo de Dimarpez te contactará pronto para confirmar la entrega.</p>
+  <button class="btn-primary" id="resetSuccessBtn">Hacer otro pedido</button>
+</div>
+
+<div class="toast" id="toastEl" style="display:none"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
