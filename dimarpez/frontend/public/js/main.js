@@ -1,9 +1,11 @@
-import { renderFeatured, renderCatalog, setFilter } from './catalog.js';
+// public/js/main.js
+import { loadProductsAndRender, renderCatalog, setFilter } from './catalog.js';
 import { updateCartUI, openCart, closeCart, resetSuccess } from './ui.js';
 import { openCheckout, closeCheckout, confirmOrder, initPayOptions } from './checkout.js';
 import { openAuth, closeAuth, handleAuth, switchAuthTab } from './auth.js';
 import { addToCart, removeFromCart } from './cart.js';
 import { showToast } from './utils.js';
+import { fetchProducts } from '@services/api.js'; // ✅ Import correcto
 
 // Navegación
 function showPage(pageName) {
@@ -16,11 +18,11 @@ function showPage(pageName) {
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (pageName === "catalog") renderCatalog();
 }
-window.showPage = showPage; // para uso global desde HTML o resetSuccess
+window.showPage = showPage;
 
 // Delegación de eventos global
 function setupDelegation() {
-  document.body.addEventListener("click", (e) => {
+  document.body.addEventListener("click", async (e) => {
     // Agregar al carrito
     const addBtn = e.target.closest(".add-btn");
     if (addBtn && addBtn.dataset.addId) {
@@ -29,14 +31,13 @@ function setupDelegation() {
       const card = addBtn.closest(".pcard");
       const select = card?.querySelector(".wselect");
       if (select) {
-        // Necesitamos obtener el producto desde api.js
-        import('../services/api.js').then(({ PRODUCTS }) => {
-          const product = PRODUCTS.find(p => p.id === productId);
-          if (product) {
-            const weight = parseFloat(select.value);
-            addToCart(product, weight);
-          }
-        });
+        // Obtener todos los productos (o podríamos obtener solo uno por ID)
+        const products = await fetchProducts();
+        const product = products.find(p => p.id === productId);
+        if (product) {
+          const weight = parseFloat(select.value);
+          addToCart(product, weight);
+        }
       }
       return;
     }
@@ -56,7 +57,6 @@ function setupDelegation() {
   });
 }
 
-// Eventos fijos
 function bindStaticEvents() {
   document.querySelectorAll("[data-nav]").forEach(el => {
     el.addEventListener("click", () => showPage(el.dataset.nav));
@@ -75,19 +75,16 @@ function bindStaticEvents() {
   });
   document.getElementById("whatsappBtn")?.addEventListener("click", () => window.open('https://wa.me/573028561215','_blank'));
   
-  // Scroll shadow en nav
   window.addEventListener("scroll", () => {
     const nav = document.getElementById("mainNav");
     if (nav) nav.classList.toggle("scrolled", window.scrollY > 10);
   });
 }
 
-// Inicialización
-function init() {
-  renderFeatured();
-  renderCatalog();
+async function init() {
+  await loadProductsAndRender();
   updateCartUI();
-  initPayOptions();   // opciones de pago en checkout
+  initPayOptions();
   setupDelegation();
   bindStaticEvents();
 }

@@ -1,6 +1,6 @@
-import { formatCOP, showToast } from './utils.js';
+import { createOrder } from '@services/api.js';
 import { getCart, getCartTotal, clearCart } from './cart.js';
-import { closeCart } from './ui.js';
+import { showToast } from './utils.js';
 
 let selectedPay = "";
 

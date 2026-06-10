@@ -1,4 +1,4 @@
-import { formatCOP, showToast } from './utils.js';
+import { showToast } from './utils.js';
 
 let cart = [];
 let cartListeners = [];

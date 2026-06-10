@@ -1,10 +1,18 @@
+// public/js/catalog.js
+import { fetchProducts, WEIGHT_OPTIONS } from '@services/api.js';
 import { formatCOP } from './utils.js';
-import { addToCart, getCart } from './cart.js';
-import { PRODUCTS, WEIGHT_OPTIONS } from '../services/api.js';
+import { addToCart } from './cart.js';
 
+let allProducts = [];
 let currentFilter = "Todos";
 
-export function renderProductCard(product, container) {
+export async function loadProductsAndRender() {
+  allProducts = await fetchProducts();
+  renderFeatured();
+  renderCatalog();
+}
+
+function renderProductCard(product, container) {
   const noStock = product.stock <= 0;
   const card = document.createElement('div');
   card.className = "pcard";
@@ -29,7 +37,7 @@ export function renderFeatured() {
   const grid = document.getElementById("featuredGrid");
   if (!grid) return;
   grid.innerHTML = "";
-  const featured = PRODUCTS.filter(p => p.activo).slice(0, 4);
+  const featured = allProducts.filter(p => p.activo).slice(0, 4);
   featured.forEach(p => renderProductCard(p, grid));
 }
 
@@ -37,7 +45,7 @@ export function renderCatalog() {
   const grid = document.getElementById("catalogGrid");
   if (!grid) return;
   grid.innerHTML = "";
-  const categories = ["Todos", ...new Set(PRODUCTS.filter(p=>p.activo).map(p=>p.categoria))];
+  const categories = ["Todos", ...new Set(allProducts.filter(p=>p.activo).map(p=>p.categoria))];
   const filterContainer = document.getElementById("filterBtns");
   if (filterContainer) {
     filterContainer.innerHTML = "";
@@ -49,7 +57,7 @@ export function renderCatalog() {
       filterContainer.appendChild(btn);
     });
   }
-  const filtered = currentFilter === "Todos" ? PRODUCTS.filter(p => p.activo) : PRODUCTS.filter(p => p.activo && p.categoria === currentFilter);
+  const filtered = currentFilter === "Todos" ? allProducts.filter(p => p.activo) : allProducts.filter(p => p.activo && p.categoria === currentFilter);
   filtered.forEach(p => renderProductCard(p, grid));
 }
 

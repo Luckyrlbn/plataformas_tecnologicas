@@ -1,3 +1,4 @@
+import { login, register } from '@services/api.js';
 import { showToast } from './utils.js';
 
 let authTab = "login";

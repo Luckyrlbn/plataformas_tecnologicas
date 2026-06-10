@@ -1,4 +1,3 @@
-// public/js/ui.js
 import { formatCOP } from './utils.js';
 import { getCart, getCartTotal, onCartChange, removeFromCart } from './cart.js';
 
