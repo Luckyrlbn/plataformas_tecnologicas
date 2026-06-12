@@ -1,25 +1,44 @@
-import { createOrder } from '@services/api.js';
 import { getCart, getCartTotal, clearCart } from './cart.js';
 import { showToast } from './utils.js';
+import { closeCart } from './ui.js';
+import { getCurrentUser, openAuth } from './auth.js';
 
 let selectedPay = "";
 
 export function openCheckout() {
-  if (getCart().length === 0) return;
+  // Verificar sesión
+  if (!getCurrentUser()) {
+    showToast("⚠️ Debes iniciar sesión para pagar", true);
+    openAuth();
+    return;
+  }
+  if (getCart().length === 0) {
+    showToast("🛒 Carrito vacío", true);
+    return;
+  }
   closeCart();
   selectedPay = "";
   document.querySelectorAll(".pay-opt").forEach(el => el.classList.remove("on"));
-  document.getElementById("chkName").value = "";
-  document.getElementById("chkAlias").value = "";
-  document.getElementById("chkAddress").value = "";
-  document.getElementById("chkNote").value = "";
-  document.getElementById("chkError").style.display = "none";
+  // Prellenar nombre del usuario si existe
+  const user = getCurrentUser();
+  const nameInput = document.getElementById("chkName");
+  if (nameInput && user) nameInput.value = user.nombre || "";
+  const aliasInput = document.getElementById("chkAlias");
+  if (aliasInput && user) aliasInput.value = user.alias || "";
+  const addressInput = document.getElementById("chkAddress");
+  if (addressInput) addressInput.value = "";
+  const noteInput = document.getElementById("chkNote");
+  if (noteInput) noteInput.value = "";
+  const err = document.getElementById("chkError");
+  if (err) err.style.display = "none";
   updateOrderSummary();
-  document.getElementById("checkoutModal").style.display = "flex";
+  const modal = document.getElementById("checkoutModal");
+  if (modal) modal.style.display = "flex";
 }
 
 export function closeCheckout() {
-  document.getElementById("checkoutModal").style.display = "none";
+  const modal = document.getElementById("checkoutModal");
+  if (modal) modal.style.display = "none";
 }
 
 export function selectPay(el, method) {
@@ -34,31 +53,48 @@ function updateOrderSummary() {
   const container = document.getElementById("orderSummaryItems");
   if (container) {
     container.innerHTML = cart.map(i => 
-      `<div class="sum-item"><span>${i.nombre} ${i.weight < 1 ? i.weight*1000+"g" : i.weight+"kg"}</span><span>${formatCOP(i.subtotal)}</span></div>`
+      `<div class="sum-item"><span>${i.nombre} ${i.weight < 1 ? i.weight*1000+"g" : i.weight+" kg"}</span><span>${formatCOP(i.subtotal)}</span></div>`
     ).join("");
   }
-  document.getElementById("orderSummaryTotal").textContent = formatCOP(total);
+  const totalSpan = document.getElementById("orderSummaryTotal");
+  if (totalSpan) totalSpan.textContent = formatCOP(total);
   const confirmBtn = document.getElementById("confirmBtn");
   if (confirmBtn) confirmBtn.textContent = `✅ Confirmar pedido · ${formatCOP(total)}`;
 }
 
-export function confirmOrder() {
-  const name = document.getElementById("chkName").value.trim();
-  const address = document.getElementById("chkAddress").value.trim();
-  const errEl = document.getElementById("chkError");
-  if (!name || !address || !selectedPay) {
-    errEl.textContent = "⚠️ Completa los campos obligatorios y selecciona método de pago.";
-    errEl.style.display = "block";
+export async function confirmOrder() {
+  // Doble verificación de sesión
+  if (!getCurrentUser()) {
+    showToast("Debes iniciar sesión", true);
+    closeCheckout();
+    openAuth();
     return;
   }
-  errEl.style.display = "none";
-  closeCheckout();
-  clearCart();
-  // mostrar pantalla de éxito (manejado en main.js)
-  document.getElementById("successScreen").style.display = "flex";
+  const name = document.getElementById("chkName")?.value.trim();
+  const address = document.getElementById("chkAddress")?.value.trim();
+  const errEl = document.getElementById("chkError");
+  if (!name || !address || !selectedPay) {
+    if (errEl) {
+      errEl.textContent = "⚠️ Completa todos los campos obligatorios y selecciona método de pago.";
+      errEl.style.display = "block";
+    }
+    return;
+  }
+  if (errEl) errEl.style.display = "none";
+  
+  // Simular pago exitoso
+  try {
+    // Aquí puedes llamar a createOrder si lo deseas
+    clearCart();
+    closeCheckout();
+    const success = document.getElementById("successScreen");
+    if (success) success.style.display = "flex";
+    showToast("✅ Pedido simulado con éxito");
+  } catch (error) {
+    showToast("❌ Error: " + error.message, true);
+  }
 }
 
-// Inicializar opciones de pago en el modal
 export function initPayOptions() {
   const grid = document.getElementById("payGrid");
   if (!grid) return;
@@ -69,8 +105,8 @@ export function initPayOptions() {
     <div class="pay-opt" data-pay="Transferencia Bancaria">🏦 Transferencia Bancaria</div>
   `;
   grid.querySelectorAll(".pay-opt").forEach(opt => {
-    opt.addEventListener("click", (e) => {
-      selectPay(opt, opt.dataset.pay);
-    });
+    opt.addEventListener("click", () => selectPay(opt, opt.dataset.pay));
   });
 }
+
+import { formatCOP } from './utils.js';

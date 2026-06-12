@@ -5,6 +5,7 @@
 package com.example.demo.repositorio;
 
 import com.example.demo.model.Perfil;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -12,5 +13,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author carlo
  */
 public interface PerfilRepository extends JpaRepository<Perfil, Integer> {
-    
+    Optional<Perfil> findByEmail(String email);
 }

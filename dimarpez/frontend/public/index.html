@@ -93,12 +93,56 @@
 <div class="modal-bg" id="authModal" style="display:none">
   <div class="modal">
     <div class="modal-title" id="authTitle">Bienvenido de nuevo</div>
-    <p class="modal-sub" id="authSub">Ingresa para ver tus pedidos y guardar tu información.</p>
-    <div class="auth-tabs"><button class="auth-tab on" data-auth-tab="login">Iniciar sesión</button><button class="auth-tab" data-auth-tab="register">Registrarse</button></div>
-    <div id="registerFields" style="display:none"><div class="fg"><label class="label">Nombre completo *</label><input class="input" id="regName" placeholder="Tu nombre"></div></div>
-    <div class="fg"><label class="label">Correo electrónico *</label><input class="input" id="authEmail" placeholder="correo@ejemplo.com"></div>
-    <div class="fg"><label class="label">Contraseña *</label><input class="input" type="password" id="authPassword" placeholder="••••••••"></div>
-    <div id="registerExtra" style="display:none"><div class="fg"><label class="label">Dirección habitual</label><input class="input" id="regAddress" placeholder="Opcional"></div><div class="fg"><label class="label">Método de pago preferido</label><select class="fselect" id="regPayment"><option value="">Seleccionar...</option><option>Efectivo</option><option>Nequi</option><option>Daviplata</option><option>Transferencia Bancaria</option></select></div></div>
+    <p class="modal-sub" id="authSub">Ingresa tu email y contraseña</p>
+    <div class="auth-tabs">
+      <button class="auth-tab on" data-auth-tab="login">Iniciar sesión</button>
+      <button class="auth-tab" data-auth-tab="register">Registrarse</button>
+    </div>
+    
+    <div id="loginFields">
+      <div class="fg">
+        <label class="label">Email *</label>
+        <input class="input" id="authEmail" placeholder="correo@ejemplo.com">
+      </div>
+      <div class="fg">
+        <label class="label">Contraseña *</label>
+        <input class="input" type="password" id="authPassword" placeholder="••••••••">
+      </div>
+    </div>
+    
+    <div id="registerFields" style="display:none">
+      <div class="fg">
+        <label class="label">Nombre completo *</label>
+        <input class="input" id="regNombre" placeholder="Tu nombre">
+      </div>
+      <div class="fg">
+        <label class="label">Email *</label>
+        <input class="input" id="regEmail" placeholder="correo@ejemplo.com">
+      </div>
+      <div class="fg">
+        <label class="label">Contraseña *</label>
+        <input class="input" type="password" id="regPassword" placeholder="••••••••">
+      </div>
+      <div class="fg">
+        <label class="label">Dirección *</label>
+        <input class="input" id="regDireccion" placeholder="Calle, barrio, punto de referencia">
+      </div>
+      <div class="fg">
+        <label class="label">Método de pago preferido *</label>
+        <select class="fselect" id="regMetodoPago">
+          <option value="">Seleccionar...</option>
+          <option>Efectivo</option>
+          <option>Nequi</option>
+          <option>Daviplata</option>
+          <option>Transferencia Bancaria</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="label">Alias (opcional)</label>
+        <input class="input" id="regAlias" placeholder="Ej: carlos123">
+      </div>
+    </div>
+    
     <div class="ferror" id="authError" style="display:none"></div>
     <button class="btn-full" id="authBtn">Ingresar</button>
     <button class="btn-ghost" id="closeAuthBtn">Cancelar</button>

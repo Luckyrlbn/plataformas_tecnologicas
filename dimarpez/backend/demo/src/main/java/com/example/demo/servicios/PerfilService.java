@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
  *
  * @author carlo
  */
-
 @Service
 @RequiredArgsConstructor
 public class PerfilService {
+
     private final PerfilRepository repo;
 
     public List<Perfil> listar() {
@@ -35,5 +35,14 @@ public class PerfilService {
 
     public void eliminar(Integer id) {
         repo.deleteById(id);
+    }
+
+    public Optional<Perfil> buscarPorEmail(String email) {
+        return repo.findByEmail(email);
+    }
+
+    public Optional<Perfil> login(String email, String password) {
+        return buscarPorEmail(email)
+                .filter(p -> p.getContraseña().equals(password));
     }
 }

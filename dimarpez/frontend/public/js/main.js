@@ -5,9 +5,11 @@ import { openCheckout, closeCheckout, confirmOrder, initPayOptions } from './che
 import { openAuth, closeAuth, handleAuth, switchAuthTab } from './auth.js';
 import { addToCart, removeFromCart } from './cart.js';
 import { showToast } from './utils.js';
-import { fetchProducts } from '@services/api.js'; // ✅ Import correcto
+import { fetchProducts } from '@services/api.js'; 
+import { updateAuthButton } from './auth.js';
 
 // Navegación
+
 function showPage(pageName) {
   document.querySelectorAll("[data-page]").forEach(el => el.classList.remove("active"));
   const page = document.getElementById(`page-${pageName}`);
@@ -83,6 +85,7 @@ function bindStaticEvents() {
 
 async function init() {
   await loadProductsAndRender();
+  updateAuthButton();  
   updateCartUI();
   initPayOptions();
   setupDelegation();

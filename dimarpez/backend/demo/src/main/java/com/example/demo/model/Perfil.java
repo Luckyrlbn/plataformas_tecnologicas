@@ -34,4 +34,7 @@ public class Perfil {
     private String metodoPago;
     private String rol;
     private LocalDateTime creadoEn;
+    private String contraseña;
+    private String email;
+
 }
