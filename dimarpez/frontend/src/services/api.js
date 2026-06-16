@@ -1,5 +1,6 @@
-// src/services/api.js
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 
 export const WEIGHT_OPTIONS = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 5];
 
@@ -14,13 +15,13 @@ export async function register(userData) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      nombre: userData.nombre,
-      email: userData.email,
+      nombre:     userData.nombre,
+      email:      userData.email,
       contraseña: userData.password,
-      direccion: userData.direccion,
+      direccion:  userData.direccion,
       metodoPago: userData.metodoPago,
-      alias: userData.alias || '',
-      rol: 'cliente'
+      alias:      userData.alias || '',
+      rol:        'cliente'
     })
   });
   if (!response.ok) {
@@ -43,15 +44,31 @@ export async function login(email, password) {
   return response.json();
 }
 
-
 export async function createOrder(orderData) {
   const response = await fetch(`${API_BASE}/pedidos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(orderData)
   });
-  if (!response.ok) throw new Error('Error al crear pedido');
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || 'Error al crear pedido');
+  }
   return response.json();
 }
 
+export async function fetchOrders() {
+  const response = await fetch(`${API_BASE}/pedidos`);
+  if (!response.ok) throw new Error('Error al cargar pedidos');
+  return response.json();
+}
 
+export async function updateOrderStatus(id, pedido) {
+  const response = await fetch(`${API_BASE}/pedidos/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(pedido)
+  });
+  if (!response.ok) throw new Error('Error al actualizar pedido');
+  return response.json();
+}
