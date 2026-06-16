@@ -3,13 +3,16 @@ import path from 'path';
 
 export default defineConfig({
   root: 'public',
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true,
+  },
   server: {
     port: 3000,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        // ¡NO USES rewrite! Elimina esa línea
       }
     }
   },
