@@ -10,7 +10,7 @@ let selectedPay = "";
 
 export function openCheckout() {
   if (!getCurrentUser()) {
-    showToast("⚠️ Debes iniciar sesión para pagar", true);
+    showToast("Debes iniciar sesión para pagar", true);
     openAuth();
     return;
   }
@@ -62,7 +62,7 @@ function updateOrderSummary() {
   const totalSpan = document.getElementById("orderSummaryTotal");
   if (totalSpan) totalSpan.textContent = formatCOP(total);
   const confirmBtn = document.getElementById("confirmBtn");
-  if (confirmBtn) confirmBtn.textContent = `✅ Confirmar pedido · ${formatCOP(total)}`;
+  if (confirmBtn) confirmBtn.textContent = `Confirmar pedido · ${formatCOP(total)}`;
 }
 
 export async function confirmOrder() {
@@ -81,7 +81,7 @@ export async function confirmOrder() {
 
   if (!name || !address || !selectedPay) {
     if (errEl) {
-      errEl.textContent = "⚠️ Completa todos los campos obligatorios y selecciona método de pago.";
+      errEl.textContent = "Completa todos los campos obligatorios y selecciona método de pago.";
       errEl.style.display = "block";
     }
     return;
@@ -92,7 +92,6 @@ export async function confirmOrder() {
   const cart  = getCart();
   const total = getCartTotal();
 
-  // Construir el cuerpo del pedido según el modelo de Spring Boot
   const orderBody = {
     codigo:     `#${Math.floor(10000 + Math.random() * 90000)}`,
     nombre:     name,
@@ -115,7 +114,7 @@ export async function confirmOrder() {
   const confirmBtn = document.getElementById("confirmBtn");
   if (confirmBtn) {
     confirmBtn.disabled = true;
-    confirmBtn.textContent = "⏳ Guardando pedido...";
+    confirmBtn.textContent = "Guardando pedido...";
   }
 
   try {
@@ -124,12 +123,12 @@ export async function confirmOrder() {
     closeCheckout();
     const success = document.getElementById("successScreen");
     if (success) success.style.display = "flex";
-    showToast("✅ Pedido confirmado y guardado");
+    showToast("Pedido confirmado y guardado");
   } catch (error) {
-    showToast("❌ Error al guardar el pedido: " + error.message, true);
+    showToast("Error al guardar el pedido: " + error.message, true);
     if (confirmBtn) {
       confirmBtn.disabled = false;
-      confirmBtn.textContent = `✅ Confirmar pedido · ${formatCOP(total)}`;
+      confirmBtn.textContent = `Confirmar pedido · ${formatCOP(total)}`;
     }
   }
 }
