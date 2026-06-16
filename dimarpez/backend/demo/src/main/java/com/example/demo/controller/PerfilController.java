@@ -1,33 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.example.demo.controller;
 
 import com.example.demo.model.Perfil;
 import com.example.demo.servicios.PerfilService;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author carlo
- */
 @RestController
 @RequestMapping("/api/perfiles")
 @RequiredArgsConstructor
-
 public class PerfilController {
 
     private final PerfilService service;
@@ -67,19 +50,25 @@ public class PerfilController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credenciales) {
-        String email = credenciales.get("email");
+        String email    = credenciales.get("email");
         String password = credenciales.get("password");
+
         if (email == null || password == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Email y password requeridos"));
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Email y password requeridos"));
         }
+
         return service.login(email, password)
                 .map(perfil -> ResponseEntity.ok(Map.of(
-                "id", perfil.getId(),
-                "nombre", perfil.getNombre(),
-                "email", perfil.getEmail(),
-                "alias", perfil.getAlias(),
-                "mensaje", "Login exitoso"
-        )))
-                .orElse(ResponseEntity.status(401).body(Map.of("error", "Email o contraseña incorrectos")));
+                        "id",         perfil.getId(),
+                        "nombre",     perfil.getNombre()     != null ? perfil.getNombre()     : "",
+                        "email",      perfil.getEmail()      != null ? perfil.getEmail()      : "",
+                        "alias",      perfil.getAlias()      != null ? perfil.getAlias()      : "",
+                        "direccion",  perfil.getDireccion()  != null ? perfil.getDireccion()  : "",
+                        "metodoPago", perfil.getMetodoPago() != null ? perfil.getMetodoPago() : "",
+                        "rol",        perfil.getRol()        != null ? perfil.getRol()        : "cliente"
+                )))
+                .orElse(ResponseEntity.status(401)
+                        .body(Map.of("error", "Email o contraseña incorrectos")));
     }
 }
